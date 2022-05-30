@@ -9,7 +9,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 
 // controladores
-import productrouter from './routes/routes.js';
+import {client_router, business_router, seller_router, product_router, user_router} from './routes/routes.js';
 
 // Midlewares
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -18,7 +18,11 @@ app.use(express.json());
 app.use(morgan('tiny'));
 
 // Routes
-app.use('/product', productrouter);
+app.use('/user', user_router);
+app.use('/seller', seller_router);
+app.use('/business', business_router);
+app.use('/product', product_router);
+app.use('/client', client_router);
 
 // Listen
 app.listen(process.env.PORT, ()=>{
