@@ -5,7 +5,7 @@ dotenv.config();
 
 class db{
 
-    #pool = null;
+    #pool;
 
     #createpool = ()=>{
         return mysql.createPool({
@@ -64,10 +64,10 @@ class db{
                 });
             },
 
-            add: (cedula, nombre, usuario, email, hash_u)=>{
+            add: (options = {cedula, nombre, usuario, email, hash_u})=>{
                 return new Promise((res,rej)=>{
                     var sql = `INSERT INTO usuario(cedula, nombre, usuario, email, hash_u)
-                                values (${cedula}, '${nombre}', '${usuario}', '${email}', '${hash_u}')`;
+                                values (${options.cedula}, '${options.nombre}', '${options.usuario}', '${options.email}', '${options.hash_u}')`;
         
                     this.#pool.execute(sql, (err, data)=>{
                         if(err) rej(err);
@@ -125,10 +125,10 @@ class db{
                 });
             },
 
-            add: (iduser, idcliente, nombre, edad, direccion, telefono)=>{
+            add: (iduser, options = {idcliente, nombre, edad, direccion, telefono})=>{
                 return new Promise((res,rej)=>{
                     var sql = `INSERT INTO cliente(iduser, idcliente, nombre, edad, direccion, telefono)
-                                values (${iduser}, ${idcliente}, '${nombre}', ${edad}, '${direccion}', ${telefono})`;
+                                values (${iduser}, ${options.idcliente}, '${options.nombre}', ${options.edad}, '${options.direccion}', ${options.telefono})`;
         
                     this.#pool.execute(sql, (err, data)=>{
                         if(err) rej(err);
@@ -184,10 +184,10 @@ class db{
                 });
             },
 
-            add: (iduser, idempresa, nombreempresa, direccion, telefono)=>{
+            add: (iduser, options = {idempresa, nombreempresa, direccion, telefono})=>{
                 return new Promise((res,rej)=>{
                     var sql = `INSERT INTO empresa(iduser, idempresa, nombreempresa, direccion, telefono)
-                                values (${iduser}, ${idempresa}, '${nombreempresa}', '${direccion}', ${telefono})`;
+                                values (${iduser}, ${options.idempresa}, '${options.nombreempresa}', '${options.direccion}', ${options.telefono})`;
         
                     this.#pool.execute(sql, (err, data)=>{
                         if(err) rej(err);
@@ -382,10 +382,10 @@ class db{
                 });
             },
 
-            add: (iduser, idvendedor, nombre, edad, direccion, telefono, sueldo)=>{
+            add: (iduser, options = {idvendedor, nombre, edad, direccion, telefono, sueldo})=>{
                 return new Promise((res,rej)=>{
                     var sql = `INSERT INTO vendedor(iduser, idvendedor, nombre, edad, direccion, telefono, sueldo)
-                                values (${iduser}, ${idvendedor}, '${nombre}', ${edad}, '${direccion}', ${telefono}, ${sueldo})`;
+                                values (${iduser}, ${options.idvendedor}, '${options.nombre}', ${options.edad}, '${options.direccion}', ${options.telefono}, ${options.sueldo})`;
         
                     this.#pool.execute(sql, (err, data)=>{
                         if(err) rej(err);
