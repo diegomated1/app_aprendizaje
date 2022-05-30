@@ -248,10 +248,10 @@ class db{
                 });
             },
 
-            add: (iduser, idempresa, nombre, valor, stock)=>{
+            add: (iduser, options = {idempresa, nombre, valor, stock})=>{
                 return new Promise((res,rej)=>{
                     var sql = `INSERT INTO producto(iduser, idempresa, nombre, valor, stock)
-                                values (${iduser}, ${idempresa}, '${nombre}', ${valor}, ${stock})`;
+                                values (${iduser}, ${options.idempresa}, '${options.nombre}', ${options.valor}, ${options.stock})`;
         
                     this.#pool.execute(sql, (err, data)=>{
                         if(err) rej(err);
