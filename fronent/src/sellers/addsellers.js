@@ -7,6 +7,7 @@ const URI = 'http://localhost:3000/seller';
 
 const AddSellers = ()=>{
     const {id} = useParams();
+    const iduser = localStorage.getItem('iduser');
     const navigate = useNavigate();
 
     const [idvendedor, setidvendedor] = useState('');
@@ -19,14 +20,17 @@ const AddSellers = ()=>{
     const guardar = async (e) =>{
         e.preventDefault();
         await axios.post(URI, {
-            idvendedor: idvendedor,
-            nombre: nombre,
-            edad: edad,
-            direccion: direccion,
-            telefono: telefono,
-            sueldo: sueldo
+            iduser: iduser,
+            options: {
+                idvendedor: idvendedor,
+                nombre: nombre,
+                edad: edad,
+                direccion: direccion,
+                telefono: telefono,
+                sueldo: sueldo
+            }
         });
-        navigate('/sellers');
+        navigate(`/${iduser}/sellers`);
     };
 
     return(

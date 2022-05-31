@@ -8,6 +8,7 @@ const URI = 'http://localhost:3000/seller';
 
 const ModifySellers = ()=>{
     const {id} = useParams();
+    const iduser = localStorage.getItem('iduser');
     const navigate = useNavigate();
 
     const [idvendedor, setidvendedor] = useState('');
@@ -22,7 +23,7 @@ const ModifySellers = ()=>{
     }, []);
 
     const getsellers = async ()=>{
-        var res = (await axios.get(`${URI}/${id}`)).data[0];
+        var res = (await axios.get(`${URI}/${iduser}/${id}`)).data[0];
         setidvendedor(res.idvendedor);
         setnombre(res.nombre);
         setedad(res.edad);
@@ -34,13 +35,16 @@ const ModifySellers = ()=>{
     const update = async (e) =>{
         e.preventDefault();
         await axios.put(`${URI}/${id}`, {
-            nombre: nombre,
-            edad: edad,
-            direccion: direccion,
-            telefono: telefono,
-            sueldo: sueldo
+            iduser: iduser,
+            options: {
+                nombre: nombre,
+                edad: edad,
+                direccion: direccion,
+                telefono: telefono,
+                sueldo: sueldo
+            }
         });
-        navigate('/sellers');
+        navigate(`/${iduser}/sellers`);
     };
 
     return(

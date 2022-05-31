@@ -7,18 +7,19 @@ const URI = 'http://localhost:3000/seller';
 
 const ShowSellers = ()=>{
     const [sellers, setsellers] = useState([]);
-    
+    const iduser = localStorage.getItem('iduser');
+
     useEffect(()=>{
         getsellers();
     }, []);
 
     const getsellers = async () => {
-        const res = await axios.get(URI);
+        const res = await axios.get(`${URI}/${iduser}`);
         setsellers(res.data);
     }
 
     const deletesellers = async (id) => {
-        await axios.delete(`${URI}/${id}`);
+        await axios.delete(`${URI}/${iduser}/${id}`);
         getsellers();
     }
 
