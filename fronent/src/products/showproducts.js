@@ -7,6 +7,8 @@ const URI = 'http://localhost:3000/product';
 
 
 const ShowProducts = ()=>{
+    const iduser = localStorage.getItem('iduser');
+
     const [products, setproducts] = useState([]);
     
     useEffect(()=>{
@@ -14,12 +16,12 @@ const ShowProducts = ()=>{
     }, []);
 
     const getproduct = async () => {
-        const res = await axios.get(URI);
+        const res = await axios.get(`${URI}/${iduser}`);
         setproducts(res.data);
     }
 
     const deleteproduct = async (id) => {
-        await axios.delete(`${URI}/${id}`);
+        await axios.delete(`${URI}/${iduser}/${id}`);
         getproduct();
     }
 

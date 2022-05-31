@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 const URI = 'http://localhost:3000/product'; 
 
 const AddProducts = ()=>{
-    const {id} = useParams();
+    const iduser = localStorage.getItem('iduser');
     const navigate = useNavigate();
 
     const [nombre, setnombre] = useState('');
@@ -17,12 +17,15 @@ const AddProducts = ()=>{
     const guardar = async (e) =>{
         e.preventDefault();
         await axios.post(URI, {
-            idempresa: idempresa,
-            nombre: nombre,
-            valor: valor,
-            stock: stock
+            iduser: iduser,
+            options: {
+                idempresa: idempresa,
+                nombre: nombre,
+                valor: valor,
+                stock: stock
+            }
         });
-        navigate('/products');
+        navigate(`/${iduser}/products`);
     };
 
     return(

@@ -7,6 +7,7 @@ const URI = 'http://localhost:3000/product';
 
 
 const ModifyProducts = ()=>{
+    const iduser = localStorage.getItem('iduser');
     const {id} = useParams();
     const navigate = useNavigate();
 
@@ -20,7 +21,7 @@ const ModifyProducts = ()=>{
     }, []);
 
     const getproduct = async ()=>{
-        var res = (await axios.get(`${URI}/${id}`)).data[0];
+        var res = (await axios.get(`${URI}/${iduser}/${id}`)).data[0];
         setidproducto(res.idproducto);
         setnombre(res.nombre);
         setvalor(res.valor);
@@ -30,11 +31,14 @@ const ModifyProducts = ()=>{
     const update = async (e) =>{
         e.preventDefault();
         await axios.put(`${URI}/${id}`, {
-            nombre: nombre,
-            valor: valor,
-            stock: stock
-        });
-        navigate('/');
+            iduser: iduser
+            ,options: {
+                nombre: nombre,
+                valor: valor,
+                stock: stock
+            }
+            });
+        navigate(`/${iduser}/products`);
     };
 
     return(
