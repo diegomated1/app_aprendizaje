@@ -8,6 +8,7 @@ const URI = 'http://localhost:3000/client';
 
 const ModifyClients= ()=>{
     const {id} = useParams();
+    const iduser = localStorage.getItem('iduser');
     const navigate = useNavigate();
 
     const [idcliente, setidcliente] = useState('');
@@ -21,7 +22,7 @@ const ModifyClients= ()=>{
     }, []);
 
     const getclients = async ()=>{
-        var res = (await axios.get(`${URI}/${id}`)).data[0];
+        var res = (await axios.get(`${URI}/${iduser}/${id}`)).data[0];
         setidcliente(res.idcliente);
         setnombre(res.nombre);
         setedad(res.edad);
@@ -32,12 +33,15 @@ const ModifyClients= ()=>{
     const update = async (e) =>{
         e.preventDefault();
         await axios.put(`${URI}/${id}`, {
-            nombre: nombre,
-            edad: edad,
-            direccion: direccion,
-            telefono: telefono
+            iduser: iduser,
+            options: {
+                nombre: nombre,
+                edad: edad,
+                direccion: direccion,
+                telefono: telefono
+            }
         });
-        navigate('/clients');
+        navigate(`/${iduser}/clients`);
     };
 
     return(

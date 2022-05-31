@@ -7,6 +7,7 @@ const URI = 'http://localhost:3000/client';
 
 const AddClients = ()=>{
     const {id} = useParams();
+    const iduser = localStorage.getItem('iduser');
     const navigate = useNavigate();
 
     const [idcliente, setidcliente] = useState('');
@@ -18,13 +19,16 @@ const AddClients = ()=>{
     const guardar = async (e) =>{
         e.preventDefault();
         await axios.post(URI, {
-            idcliente: idcliente,
-            nombre: nombre,
-            edad: edad,
-            direccion: direccion,
-            telefono: telefono
+            iduser: iduser,
+            options: {
+                idcliente: idcliente,
+                nombre: nombre,
+                edad: edad,
+                direccion: direccion,
+                telefono: telefono
+        }
         });
-        navigate('/clients');
+        navigate(`/${iduser}/clients`);
     };
 
     return(
