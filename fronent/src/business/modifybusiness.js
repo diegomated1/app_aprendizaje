@@ -8,6 +8,7 @@ const URI = 'http://localhost:3000/business';
 
 const ModifyBusiness = ()=>{
     const {id} = useParams();
+    const iduser = localStorage.getItem('iduser');
     const navigate = useNavigate();
 
     const [idempresa, setidempresa] = useState('');
@@ -20,7 +21,7 @@ const ModifyBusiness = ()=>{
     }, []);
 
     const getbusiness = async ()=>{
-        var res = (await axios.get(`${URI}/${id}`)).data[0];
+        var res = (await axios.get(`${URI}/${iduser}/${id}`)).data[0];
         setidempresa(res.idempresa);
         setnombreempresa(res.nombreempresa);
         setdireccion(res.direccion);
@@ -30,11 +31,14 @@ const ModifyBusiness = ()=>{
     const update = async (e) =>{
         e.preventDefault();
         await axios.put(`${URI}/${id}`, {
-            nombreempresa: nombreempresa,
-            direccion: direccion,
-            telefono: telefono
+            iduser: iduser,
+            options: {
+                nombreempresa: nombreempresa,
+                direccion: direccion,
+                telefono: telefono
+            }
         });
-        navigate('/business');
+        navigate(`/${iduser}/business`);
     };
 
     return(

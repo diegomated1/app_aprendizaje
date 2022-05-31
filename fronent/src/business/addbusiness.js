@@ -7,6 +7,7 @@ const URI = 'http://localhost:3000/business';
 
 const AddBusiness = ()=>{
     const {id} = useParams();
+    const iduser = localStorage.getItem('iduser');
     const navigate = useNavigate();
 
     const [idempresa, setidempresa] = useState('');
@@ -17,12 +18,15 @@ const AddBusiness = ()=>{
     const guardar = async (e) =>{
         e.preventDefault();
         await axios.post(URI, {
-            idempresa: idempresa,
-            nombreempresa: nombreempresa,
-            direccion: direccion,
-            telefono: telefono
+            iduser: iduser,
+            options: {
+                idempresa: idempresa,
+                nombreempresa: nombreempresa,
+                direccion: direccion,
+                telefono: telefono
+            }
         });
-        navigate('/business');
+        navigate(`/${iduser}/business`);
     };
 
     return(

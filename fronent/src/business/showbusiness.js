@@ -6,6 +6,7 @@ import {Link} from 'react-router-dom';
 const URI = 'http://localhost:3000/business'; 
 
 const ShowBusiness = ()=>{
+    const iduser = localStorage.getItem('iduser');
     const [business, setbusiness] = useState([]);
     
     useEffect(()=>{
@@ -13,12 +14,12 @@ const ShowBusiness = ()=>{
     }, []);
 
     const getbusiness = async () => {
-        const res = await axios.get(URI);
+        const res = await axios.get(`${URI}/${iduser}`);
         setbusiness(res.data);
     }
 
     const deletebusiness = async (id) => {
-        await axios.delete(`${URI}/${id}`);
+        await axios.delete(`${URI}/${iduser}/${id}`);
         getbusiness();
     }
 
