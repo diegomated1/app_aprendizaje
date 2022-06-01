@@ -1,10 +1,6 @@
 
-import axios from 'axios';
-import {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-
-const URI = 'http://localhost:3000/'; 
 
 const Menu = ()=>{
     var iduser = localStorage.getItem('iduser');

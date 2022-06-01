@@ -20,34 +20,34 @@ import ShowSellers from './sellers/showsellers.js';
 import AddSellers from './sellers/addsellers.js';
 import ModifySellers from './sellers/modifysellers.js';
 
-import {BrowserRouter, Route, Router, Routes} from 'react-router-dom';
+import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
 
 function App() {
-  var iduser = `/${localStorage.getItem('iduser')}`;
+  var iduser = localStorage.getItem('iduser');
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route exact path='/' element={<Navigate to='/login'/>}/>
+          <Route exact path='/' element={(iduser!==null) ? <Navigate to={`/${iduser}`}/> : <Navigate to='/login'/>}/>
           <Route path='/login' element={<LogIn/>}/>
           <Route path='/signin' element={<SignIn/>}/>
 
-          <Route path='/:iduser' element={<Menu/>}/>
+          <Route exact path='/:iduser' element={<Menu/>}/>
 
-          <Route path='/:iduser/products' element={<ShowProducts/>}/>
+          <Route exact path='/:iduser/products' element={<ShowProducts/>}/>
           <Route path='/:iduser/products/create' element={<AddProducts/>}/>
           <Route path='/:iduser/products/edit/:id' element={<ModifyProducts/>}/>
 
-          <Route path='/:iduser/business' element={<ShowBusiness/>}/>
+          <Route exact path='/:iduser/business' element={<ShowBusiness/>}/>
           <Route path='/:iduser/business/create' element={<AddBusiness/>}/>
           <Route path='/:iduser/business/edit/:id' element={<ModifyBusiness/>}/>
 
-          <Route path='/:iduser/clients' element={<ShowClients/>}/>
+          <Route exact path='/:iduser/clients' element={<ShowClients/>}/>
           <Route path='/:iduser/clients/create' element={<AddClients/>}/>
           <Route path='/:iduser/clients/edit/:id' element={<ModifyClients/>}/>
 
-          <Route path='/:iduser/sellers' element={<ShowSellers/>}/>
+          <Route exact path='/:iduser/sellers' element={<ShowSellers/>}/>
           <Route path='/:iduser/sellers/create' element={<AddSellers/>}/>
           <Route path='/:iduser/sellers/edit/:id' element={<ModifySellers/>}/>
         </Routes>

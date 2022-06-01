@@ -1,12 +1,12 @@
 
 import axios from 'axios';
-import {useState, useEffect} from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import {useState} from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const URI = 'http://localhost:3000/user'; 
 
 const SignIn = ()=>{
-    const {id} = useParams();
     const navigate = useNavigate();
 
     const [cedula, setcedula] = useState('');
@@ -54,8 +54,9 @@ const SignIn = ()=>{
                     placeholder='Password'
                     onChange={(e)=> sethash_u(e.target.value)}
                 /><br/>
-                <button type="submit" className='btn btn-primary'>Agregar</button>
+                <button type="submit" className='btn btn-primary'>Registrarse</button>
             </form>
+            <Link to='/login' className='btn btn-secondary'>Iniciar Sesion</Link>
         </div>
     )
 }
