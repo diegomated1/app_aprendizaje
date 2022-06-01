@@ -175,7 +175,7 @@ class db{
                 direccion: null,
                 telefono: null})=>{
                 return new Promise((res,rej)=>{
-                    var sql = this.#select(options, 'empresa', 'iduser, idempresa, nombreempresa, direccion, telefono')
+                    var sql = this.#select(options, 'empresa', 'iduser, idempresa, nombreempresa, direccion, telefono');
                     
                     this.#pool.execute(sql, (err, data)=>{
                         if(err) rej(err);

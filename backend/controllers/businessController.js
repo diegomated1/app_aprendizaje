@@ -1,6 +1,5 @@
 import db from '../database/db.js';
 
-
 export const getbusiness = async (req, res)=>{
     try{
         if(req.params.id===undefined){
