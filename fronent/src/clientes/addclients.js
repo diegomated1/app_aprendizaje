@@ -1,12 +1,11 @@
 
 import axios from 'axios';
-import {useState, useEffect} from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import {useState} from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 
 const URI = 'http://localhost:3000/client'; 
 
 const AddClients = ()=>{
-    const {id} = useParams();
     const iduser = localStorage.getItem('iduser');
     const navigate = useNavigate();
 
@@ -33,6 +32,7 @@ const AddClients = ()=>{
 
     return(
         <div>
+            <Link to={`/${iduser}/clients`} className='btn btn-secondary'>Back</Link>
             <h3>Agregar Cliente</h3>
             <form onSubmit={guardar}>
                 <input

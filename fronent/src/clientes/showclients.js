@@ -25,6 +25,7 @@ const ShowClients = ()=>{
 
     return(
         <div className='container'>
+            <Link to={`/${iduser}`} className='btn btn-primary'>Menu</Link>
             <Link to='create' className='btn btn-primary'>Añadir</Link>
             <table className='table'>
                 <thead>
