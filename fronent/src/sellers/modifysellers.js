@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 import {useState, useEffect} from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 
 const URI = 'http://localhost:3000/seller'; 
 
@@ -49,6 +49,7 @@ const ModifySellers = ()=>{
 
     return(
         <div>
+            <Link to={`/${iduser}/sellers`} className='btn btn-secondary'>Back</Link>
             <h3>Modificar Vendedor #{idvendedor}</h3>
             <form onSubmit={update}>
                 <input

@@ -1,12 +1,11 @@
 
 import axios from 'axios';
-import {useState, useEffect} from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import {useState} from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 
 const URI = 'http://localhost:3000/seller'; 
 
 const AddSellers = ()=>{
-    const {id} = useParams();
     const iduser = localStorage.getItem('iduser');
     const navigate = useNavigate();
 
@@ -35,6 +34,7 @@ const AddSellers = ()=>{
 
     return(
         <div>
+            <Link to={`/${iduser}/sellers`} className='btn btn-secondary'>Back</Link>
             <h3>Agregar Vendedor</h3>
             <form onSubmit={guardar}>
                 <input
