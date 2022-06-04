@@ -30,13 +30,10 @@ const ModifyBusiness = ()=>{
 
     const update = async (e) =>{
         e.preventDefault();
-        await axios.put(`${URI}/${id}`, {
-            iduser: iduser,
-            options: {
-                nombreempresa: nombreempresa,
-                direccion: direccion,
-                telefono: telefono
-            }
+        await axios.put(`${URI}/${iduser}/${id}`, {
+            nombreempresa: nombreempresa,
+            direccion: direccion,
+            telefono: telefono
         });
         navigate(`/${iduser}/business`);
     };

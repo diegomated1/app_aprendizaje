@@ -16,14 +16,11 @@ const AddBusiness = ()=>{
 
     const guardar = async (e) =>{
         e.preventDefault();
-        await axios.post(URI, {
-            iduser: iduser,
-            options: {
-                idempresa: idempresa,
-                nombreempresa: nombreempresa,
-                direccion: direccion,
-                telefono: telefono
-            }
+        await axios.post(`${URI}/${iduser}`, {
+            idempresa: idempresa,
+            nombreempresa: nombreempresa,
+            direccion: direccion,
+            telefono: telefono
         });
         navigate(`/${iduser}/business`);
     };

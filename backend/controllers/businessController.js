@@ -1,11 +1,11 @@
-import db from '../database/db.js';
+import {empresa} from '../models/models.js';
 
-export const getbusiness = async (req, res)=>{
+export const getBusiness = async (req, res)=>{
     try{
         if(req.params.id===undefined){
-            var empresas = await db.empresa.select({iduser: req.params.iduser});
+            var empresas = await empresa.select({where: {iduser: req.params.iduser}});
         }else{
-            var empresas = await db.empresa.select({iduser: req.params.iduser, idempresa: req.params.id});
+            var empresas = await empresa.select({where: {iduser: req.params.iduser, idempresa: req.params.id}});
         }
         res.json(empresas);
     }catch(err){
@@ -13,29 +13,33 @@ export const getbusiness = async (req, res)=>{
     }
 };
 
-export const editbusiness = async (req, res)=>{
+export const addBusiness = async (req, res)=>{
     try{
-        await db.empresa.update(req.body.iduser, req.params.id, req.body.options);
+        var data = req.body;
+        data.iduser = req.params.iduser;
+        await empresa.insert(data);
+        res.json({message: 'añadido'});
+    }catch(err){
+        res.json({error: err.message});
+    }
+};
+
+export const editBusiness = async (req, res)=>{
+    try{
+        await empresa.update(req.body, {iduser: req.params.iduser, idempresa: req.params.id});
         res.json({message: 'editado'});
     }catch(err){
         res.json({error: err.message});
     }
 };
 
-export const deletebusiness = async (req, res)=>{
+export const deleteBusiness = async (req, res)=>{
     try{
-        await db.empresa.delete(req.params.iduser, req.params.id);
+        await empresa.delete({iduser: req.params.iduser, idempresa: req.params.id});
         res.json({message: 'eliminado'});
     }catch(err){
         res.json({error: err.message});
     }
 };
 
-export const addbusiness = async (req, res)=>{
-    try{
-        await db.empresa.add(req.body.iduser, req.body.options);
-        res.json({message: 'añadido'});
-    }catch(err){
-        res.json({error: err.message});
-    }
-};
+
