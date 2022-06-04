@@ -3,431 +3,180 @@ import vali from 'validator';
 import dotenv from 'dotenv';
 dotenv.config();
 
-class db{
-
-    #pool;
-
-    #createpool = ()=>{
-        return mysql.createPool({
-            host: 'localhost',
-            database: 'facturacion',
-            user: 'root',
-            password: process.env.DBPSS
-        });
+class column{
+    constructor(nombre, tipo){
+        this.nombre = nombre;
+        this.tipo = tipo;
     }
-
-    #select = (options, table, columns)=>{
-        var sql =  `SELECT ${columns} FROM ${table} `;
-        var keys = Object.keys(options);
-
-        keys.forEach(e=>{
-            if(typeof options[e]==='number'){
-                sql += `${(e==keys[0]) ? `WHERE ${e} = ${options[e]} ` : `AND ${e} = ${options[e]} `}`
-            }else{
-                sql += `${(e==keys[0]) ? `WHERE ${e} = '${options[e]}' ` : `AND ${e} = '${options[e]}' `}`
-            }
-            
-        });
-        return sql;
-    }
-
-    #update = (options, table)=>{
-        var sql = `UPDATE ${table} SET `;
-        var keys = Object.keys(options);
-
-        keys.forEach(e=>{
-            sql += `${(typeof options[e]==='number') ? `${e} = ${options[e]}` : ` ${e} = '${options[e]}'`}, `
-        });
-        sql = sql.slice(0, sql.length-2);
-        return sql;
-    }
-
-    constructor(){
-
-        this.#pool = this.#createpool();
-
-        this.usuario = {
-            select: (options = {
-                cedula: null,
-                nombre: null,
-                usuario: null,
-                email: null,
-                hash_u: null})=>{
-                return new Promise((res,rej)=>{
-
-                    var sql = this.#select(options, 'usuario', 'cedula, nombre, usuario, email, hash_u as hash')
-                    
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                });
-            },
-
-            add: (options = {cedula, nombre, usuario, email, hash_u})=>{
-                return new Promise((res,rej)=>{
-                    var sql = `INSERT INTO usuario(cedula, nombre, usuario, email, hash_u)
-                                values (${options.cedula}, '${options.nombre}', '${options.usuario}', '${options.email}', '${options.hash_u}')`;
-        
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                }) 
-            },
-
-            update: (cedula, options = {
-                nombre: null,
-                usuario: null,
-                email: null,
-                hash_u: null})=>{
-                return new Promise((res,rej)=>{
-                    var sql = this.#update(options, 'usuario');
-                    sql += ` WHERE cedula=${cedula}`;
-                    
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                });
-            },
-
-            delete: (cedula)=>{
-                return new Promise((res, rej)=>{
-        
-                    var sql = `DELETE FROM usuario
-                    WHERE cedula = ${cedula}`;
-        
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                });
-            }
-        }
-
-        this.cliente = {
-            select: (options = {
-                iduser: null,
-                idcliente: null,
-                nombre: null,
-                edad: null,
-                direccion: null,
-                telefono: null})=>{
-                return new Promise((res,rej)=>{
-
-                    var sql = this.#select(options, 'cliente', 'iduser, idcliente, nombre, edad, direccion, telefono')
-                    
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                });
-            },
-
-            add: (iduser, options = {idcliente, nombre, edad, direccion, telefono})=>{
-                return new Promise((res,rej)=>{
-                    var sql = `INSERT INTO cliente(iduser, idcliente, nombre, edad, direccion, telefono)
-                                values (${iduser}, ${options.idcliente}, '${options.nombre}', ${options.edad}, '${options.direccion}', ${options.telefono})`;
-        
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                }) 
-            },
-
-            update: (iduser, idcliente, options = {
-                nombre: null,
-                edad: null,
-                direccion: null,
-                telefono: null})=>{
-                return new Promise((res,rej)=>{
-                    var sql = this.#update(options, 'cliente');
-                    sql += ` WHERE iduser=${iduser} AND idcliente=${idcliente}`;
-                    
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                });
-            },
-
-            delete: (iduser, idcliente)=>{
-                return new Promise((res, rej)=>{
-        
-                    var sql = `DELETE FROM cliente
-                    WHERE idcliente = ${idcliente} AND iduser = ${iduser}`;
-        
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                });
-            }
-        }
-
-        this.empresa = {
-            select: (options = {
-                iduser: null,
-                idempresa: null,
-                nombreempresa: null,
-                direccion: null,
-                telefono: null})=>{
-                return new Promise((res,rej)=>{
-                    var sql = this.#select(options, 'empresa', 'iduser, idempresa, nombreempresa, direccion, telefono');
-                    
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                });
-            },
-
-            add: (iduser, options = {idempresa, nombreempresa, direccion, telefono})=>{
-                return new Promise((res,rej)=>{
-                    var sql = `INSERT INTO empresa(iduser, idempresa, nombreempresa, direccion, telefono)
-                                values (${iduser}, ${options.idempresa}, '${options.nombreempresa}', '${options.direccion}', ${options.telefono})`;
-        
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                }) 
-            },
-
-            update: (iduser, idempresa, options = {
-                nombreempresa: null,
-                direccion: null,
-                telefono: null})=>{
-                return new Promise((res,rej)=>{
-                    var sql = 'UPDATE empresa SET ';
-                    var keys = Object.keys(options);
-
-                    keys.forEach(e=>{
-                        sql += `${(typeof options[e]==='number') ? `${e} = ${options[e]}` : ` ${e} = '${options[e]}'`}, `
-                    });
-                    sql = sql.slice(0, sql.length-2);
-                    sql += ` WHERE iduser=${iduser} AND idempresa=${idempresa}`;
-                    
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                });
-            },
-
-            delete: (iduser, idempresa)=>{
-                return new Promise((res, rej)=>{
-        
-                    var sql = `DELETE FROM empresa
-                    WHERE idempresa = ${idempresa} AND iduser = ${iduser}`;
-        
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                });
-            }
-        }
-
-        this.producto = {
-            select: (options = {
-                iduser: null,
-                idproducto: null,
-                idempresa: null,
-                nombre: null,
-                valor: null,
-                stock: null})=>{
-                return new Promise((res,rej)=>{
-                    var sql = this.#select(options, 'producto', 'iduser, idproducto, idempresa, nombre, valor, stock');
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                });
-            },
-
-            add: (iduser, options = {idempresa, nombre, valor, stock})=>{
-                return new Promise((res,rej)=>{
-                    var sql = `INSERT INTO producto(iduser, idempresa, nombre, valor, stock)
-                                values (${iduser}, ${options.idempresa}, '${options.nombre}', ${options.valor}, ${options.stock})`;
-        
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                }) 
-            },
-
-            update: (iduser, idproducto, options = {
-                nombre: null,
-                valor: null,
-                stock: null})=>{
-                return new Promise((res,rej)=>{
-                    var sql = 'UPDATE producto SET ';
-                    var keys = Object.keys(options);
-
-                    keys.forEach(e=>{
-                        sql += `${(typeof options[e]==='number') ? `${e} = ${options[e]}` : ` ${e} = '${options[e]}'`}, `
-                    });
-                    sql = sql.slice(0, sql.length-2);
-                    sql += ` WHERE iduser=${iduser} AND idproducto=${idproducto}`;
-                    
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                });
-            },
-
-            delete: (iduser, idproducto)=>{
-                return new Promise((res, rej)=>{
-        
-                    var sql = `DELETE FROM producto
-                    WHERE idproducto = ${idproducto} AND iduser = ${iduser}`;
-        
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                });
-            }
-        }
-
-        this.factura = {
-            select: (options = {
-                iduser: null,
-                idfactura: null,
-                fc: null,
-                fe: null,
-                idcliente: null,
-                idvendedor: null,
-                valorfactura: null,
-                descuentofactura: null})=>{
-                return new Promise((res,rej)=>{
-                    var sql = this.#select(options, 'factura', 'iduser, idfactura, fc, fe, idcliente, idvendedor, valorfactura, descuentofactura');
-                    
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                });
-            },
-
-            add: (iduser, fe, idcliente, idvendedor, valorfactura, descuentofactura)=>{
-                return new Promise((res,rej)=>{
-                    var sql = `INSERT INTO producto(iduser, fc, fe, idcliente, idvendedor, valorfactura, descuentofactura)
-                                values (${iduser}, now(), '${fe}', ${idcliente}, ${idvendedor}, ${valorfactura}, ${descuentofactura})`;
-        
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                }) 
-            },
-
-            update: (iduser, idfactura, options = {
-                fe: null,
-                valorfactura: null,
-                descuentofactura: null})=>{
-                return new Promise((res,rej)=>{
-                    var sql = 'UPDATE factura SET ';
-                    var keys = Object.keys(options);
-
-                    keys.forEach(e=>{
-                        sql += `${(typeof options[e]==='number') ? `${e} = ${options[e]}` : ` ${e} = '${options[e]}'`}, `
-                    });
-                    sql = sql.slice(0, sql.length-2);
-                    sql += ` WHERE iduser=${iduser} AND idfactura=${idfactura}`;
-                    
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                });
-            },
-
-            delete: (iduser, idfactura)=>{
-                return new Promise((res, rej)=>{
-        
-                    var sql = `DELETE FROM factura
-                    WHERE idfactura = ${idfactura} AND iduser = ${iduser}`;
-        
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                });
-            }
-        }
-
-        this.vendedor = {
-            select: (options = {
-                iduser: null,
-                idvendedor: null,
-                nombre: null,
-                edad: null,
-                direccion: null,
-                telefono: null,
-                sueldo: null})=>{
-                return new Promise((res,rej)=>{
-
-                    var sql = this.#select(options, 'vendedor', 'iduser, idvendedor, nombre, edad, direccion, telefono, sueldo')
-                    
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                });
-            },
-
-            add: (iduser, options = {idvendedor, nombre, edad, direccion, telefono, sueldo})=>{
-                return new Promise((res,rej)=>{
-                    var sql = `INSERT INTO vendedor(iduser, idvendedor, nombre, edad, direccion, telefono, sueldo)
-                                values (${iduser}, ${options.idvendedor}, '${options.nombre}', ${options.edad}, '${options.direccion}', ${options.telefono}, ${options.sueldo})`;
-        
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                }) 
-            },
-
-            update: (iduser, idvendedor, options = {
-                nombre: null,
-                edad: null,
-                direccion: null,
-                telefono: null,
-                sueldo: null})=>{
-                return new Promise((res,rej)=>{
-                    var sql = this.#update(options, 'vendedor');
-                    sql += ` WHERE iduser=${iduser} AND idvendedor=${idvendedor}`;
-                    
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                });
-            },
-
-            delete: (iduser, idvendedor)=>{
-                return new Promise((res, rej)=>{
-        
-                    var sql = `DELETE FROM vendedor
-                    WHERE idvendedor = ${idvendedor} AND iduser = ${iduser}`;
-        
-                    this.#pool.execute(sql, (err, data)=>{
-                        if(err) rej(err);
-                        res(data);
-                    });
-                });
-            }
-        }
-    }
-
 }
 
+class table{
+    #database;
 
-export default new db(); 
+    constructor(nombre, columns, primary_key = {nombre, tipo}, database){
+        this.columns = {};
+        this.#database = database;
+        this.primary_key = primary_key;
+        this.table_nombre = nombre;
+        
+        this.columns[primary_key.nombre] = new column(primary_key.nombre, primary_key.tipo);
+        Object.keys(columns).forEach(column_name=>{
+            var table_column = new column(column_name, columns[column_name]);
+            this.columns[column_name] = table_column;
+        });
+    }
 
+    select(options = {columns: [], where: {}, innerjoin: {tablejoin: undefined, columns: []}}){
+        return new Promise((res, rej)=>{
+            var columns = (options.columns===undefined) ? [] : options.columns;
+            var where = (options.where===undefined) ? {} : options.where;
+            var innerjoin = (options.innerjoin===undefined) ? {tablejoin: undefined, columns: []} : options.innerjoin;
+
+            var sqlcolumns = 'SELECT';
+            // COLUMNS
+            if(columns.length==0){
+                Object.keys(this.columns).forEach(column_name=>{
+                    sqlcolumns += ` ${this.table_nombre}.${column_name},`;
+                });
+            }else{
+                columns.forEach(column_name=>{
+                    sqlcolumns += ` ${this.table_nombre}.${column_name},`;
+                });
+            }
+
+            // INNER JOIN
+            var join = '';
+            if(innerjoin.tablejoin!==undefined){
+                if(innerjoin.columns===undefined || innerjoin.columns.length==0){
+                    Object.keys(innerjoin.tablejoin.columns).forEach(column_name=>{
+                        sqlcolumns += ` ${innerjoin.tablejoin.table_nombre}.${column_name},`;
+                    });
+                }else{
+                    innerjoin.columns.forEach(column_name=>{
+                        sqlcolumns += ` ${innerjoin.tablejoin.table_nombre}.${column_name},`;
+                    });
+                }
+                join = `INNER JOIN ${innerjoin.tablejoin.table_nombre} ON ${this.table_nombre}.${this.primary_key.nombre} = ${innerjoin.tablejoin.table_nombre}.${innerjoin.tablejoin.primary_key.nombre} `;
+            }
+            sqlcolumns = sqlcolumns.slice(0, sqlcolumns.length-1);
+
+            // WHERE
+            var from = ` FROM ${this.table_nombre} `;
+            var sqlwhere = '';
+            var keys = Object.keys(where);
+    
+            keys.forEach(e=>{
+                if(typeof where[e]==='number'){
+                    sqlwhere += `${(e==keys[0]) ? `WHERE ${this.table_nombre}.${e} = ${where[e]} ` : `AND ${this.table_nombre}.${e} = ${where[e]} `}`
+                }else{
+                    sqlwhere += `${(e==keys[0]) ? `WHERE ${this.table_nombre}.${e} = '${where[e]}' ` : `AND ${this.table_nombre}.${e} = '${where[e]}' `}`
+                }
+            });
+            
+            var sql = sqlcolumns + from + join + sqlwhere;
+
+            this.#database.pool.execute(sql, (err, data)=>{
+                if(err) rej(err);
+                res(data);
+            });
+        });
+    }
+
+    insert(values = {}){
+        return new Promise((res, rej)=>{
+            var sql = `INSERT INTO ${this.table_nombre}(`;
+            var sql_aux = ') VALUES (';
+            Object.keys(values).forEach(e=>{
+                sql += `${e}, `;
+                sql_aux += `${(typeof values[e]==='number') ? `${values[e]}, ` : `'${values[e]}', `}`
+            });
+            sql = sql.slice(0,sql.length-2) + sql_aux.slice(0,sql_aux.length-2) + ')';
+
+            this.#database.pool.execute(sql, (err, data)=>{
+                if(err) rej(err);
+                res(data);
+            });
+        });    
+    }
+
+    update(columns = {}, where = {}){
+        return new Promise((res, rej)=>{
+            var sql = `UPDATE ${this.table_nombre} SET `;
+            // COLUMNS
+            Object.keys(columns).forEach(e=>{
+                sql += `${e} = ${(typeof columns[e]==='number') ? `${columns[e]}, ` : `'${columns[e]}', `}`
+            });
+
+            sql = sql.slice(0, sql.length-2) + ' ';
+    
+            // WHERE
+            var keys = Object.keys(where);
+    
+            keys.forEach(e=>{
+                if(vali.isNumeric(where[e].toString())){
+                    sql += `${(e==keys[0]) ? `WHERE ${e} = ${where[e]} ` : `AND ${e} = ${where[e]} `}`
+                }else{
+                    sql += `${(e==keys[0]) ? `WHERE ${e} = '${where[e]}' ` : `AND ${e} = '${where[e]}' `}`
+                }
+            });
+            this.#database.pool.execute(sql, (err, data)=>{
+                if(err) rej(err);
+                res(data);
+            });
+        });
+    }
+
+    delete(where = {}){
+        return new Promise((res, rej)=>{
+            var sql = `DELETE FROM ${this.table_nombre} `;
+            
+            // WHERE
+            var keys = Object.keys(where);
+    
+            keys.forEach(e=>{
+                if(typeof where[e]==='number'){
+                    sql += `${(e==keys[0]) ? `WHERE ${e} = ${where[e]} ` : `AND ${e} = ${where[e]} `}`
+                }else{
+                    sql += `${(e==keys[0]) ? `WHERE ${e} = '${where[e]}' ` : `AND ${e} = '${where[e]}' `}`
+                }
+            });
+            
+            this.#database.pool.execute(sql, (err, data)=>{
+                if(err) rej(err);
+                res(data);
+            });
+        });
+    }
+}
+
+class database{
+
+    #createpool = (options = {dbname, host, user, password})=>{
+        return mysql.createPool({
+            host: options.host,
+            database: options.dbname,
+            user: options.user,
+            password: options.password
+        });
+    }
+
+    constructor(options = {dbname, host, user, password}){
+        this.tables = {};
+        this.pool = this.#createpool(options);
+
+        this.ADD = {
+            TABLE: (table_name, primary_key = {nombre, tipo}, columns = {})=>{
+                var db_table = new table(table_name, columns, primary_key, this);
+                this.tables[table_name] = db_table;
+                return db_table;
+            }
+        }
+    }
+}
+
+export default new database({
+    dbname: 'facturacion',
+    host: 'localhost',
+    user: 'root',
+    password: process.env.DBPSS
+});

@@ -4,56 +4,46 @@ const clientrouter = express.Router();
 const sellerrouter = express.Router();
 const businessrouter = express.Router();
 const userrouter = express.Router();
+const facturarouter = express.Router();
 
-import {getproduct, editproduct, deleteproduct, addproduct} from '../controllers/productsController.js';
-import {getclient, editclient, deletecliente, addcliente} from '../controllers/clientController.js';
-import {getseller, editseller, deleteseller, addseller} from '../controllers/sellerController.js';
-import {getbusiness, editbusiness, deletebusiness, addbusiness} from '../controllers/businessController.js';
-import {getuser, edituser, deleteuser, adduser, login} from '../controllers/userController.js';
+import {getProduct, addProduct, editProduct, deleteProduct} from '../controllers/productController.js';
+import {getClient, addClient, editClient, deleteClient} from '../controllers/clientController.js';
+import {getSeller, addSeller, editSeller, deleteSeller} from '../controllers/sellerController.js';
+import {getBusiness, addBusiness, editBusiness, deleteBusiness} from '../controllers/businessController.js';
+import {getUser, addUser, editUser, deleteUser, login, register} from '../controllers/userController.js';
+//import {getUser, editUser, deleteUser, adduser, login} from '../controllers/userController.js';
+//import {getfactura, editfactura, deletefacturas, addfacturas} from '../controllers/facturaController.js';
 
-//#region productrouter
-productrouter.get('/:iduser', getproduct);
-productrouter.get('/:iduser/:id', getproduct);
-productrouter.post('/', addproduct);
-productrouter.put('/:id', editproduct);
-productrouter.delete('/:iduser/:id', deleteproduct);
-//#endregion
+productrouter.get('/:iduser', getProduct);
+productrouter.get('/:iduser/:id', getProduct);
+productrouter.post('/:iduser', addProduct);
+productrouter.put('/:iduser/:id', editProduct);
+productrouter.delete('/:iduser/:id', deleteProduct);
 
-//#region clientrouter
-clientrouter.get('/:iduser', getclient);
-clientrouter.get('/:iduser/:id', getclient);
-clientrouter.post('/', addcliente);
-clientrouter.put('/:id', editclient);
-clientrouter.delete('/:iduser/:id', deletecliente);
-//#endregion
+clientrouter.get('/:iduser', getClient);
+clientrouter.get('/:iduser/:id', getClient);
+clientrouter.post('/:iduser', addClient);
+clientrouter.put('/:iduser/:id', editClient);
+clientrouter.delete('/:iduser/:id', deleteClient);
 
-//#region sellerrouter
-sellerrouter.get('/:iduser', getseller);
-sellerrouter.get('/:iduser/:id', getseller);
-sellerrouter.post('/', addseller);
-sellerrouter.put('/:id', editseller);
-sellerrouter.delete('/:iduser/:id', deleteseller);
-//#endregion
+sellerrouter.get('/:iduser', getSeller);
+sellerrouter.get('/:iduser/:id', getSeller);
+sellerrouter.post('/:iduser', addSeller);
+sellerrouter.put('/:iduser/:id', editSeller);
+sellerrouter.delete('/:iduser/:id', deleteSeller);
 
-//#region businessrouter
-businessrouter.get('/:iduser', getbusiness);
-businessrouter.get('/:iduser/:id', getbusiness);
-businessrouter.post('/', addbusiness);
-businessrouter.put('/:id', editbusiness);
-businessrouter.delete('/:iduser/:id', deletebusiness);
-//#endregion
+businessrouter.get('/:iduser', getBusiness);
+businessrouter.get('/:iduser/:id', getBusiness);
+businessrouter.post('/:iduser', addBusiness);
+businessrouter.put('/:iduser/:id', editBusiness);
+businessrouter.delete('/:iduser/:id', deleteBusiness);
 
-//#region userrouter
 userrouter.post('/login', login);
-userrouter.get('/', getuser);
-userrouter.get('/:id', getuser);
-userrouter.post('/', adduser);
-userrouter.put('/:id', edituser);
-userrouter.delete('/:id', deleteuser);
-//#endregion
+userrouter.post('/register', register);
 
 export const product_router = productrouter;
 export const client_router = clientrouter;
 export const seller_router = sellerrouter;
 export const business_router = businessrouter;
 export const user_router = userrouter;
+export const factura_router = facturarouter;
