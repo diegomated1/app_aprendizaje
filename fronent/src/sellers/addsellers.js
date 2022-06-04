@@ -18,16 +18,13 @@ const AddSellers = ()=>{
 
     const guardar = async (e) =>{
         e.preventDefault();
-        await axios.post(URI, {
-            iduser: iduser,
-            options: {
-                idvendedor: idvendedor,
-                nombre: nombre,
-                edad: edad,
-                direccion: direccion,
-                telefono: telefono,
-                sueldo: sueldo
-            }
+        await axios.post(`${URI}/${iduser}`, {
+            idvendedor: idvendedor,
+            nombre: nombre,
+            edad: edad,
+            direccion: direccion,
+            telefono: telefono,
+            sueldo: sueldo
         });
         navigate(`/${iduser}/sellers`);
     };
