@@ -34,14 +34,11 @@ const AddProducts = ()=>{
 
     const guardar = async (e) =>{
         e.preventDefault();
-        await axios.post(URI, {
-            iduser: iduser,
-            options: {
-                idempresa: idempresa,
-                nombre: nombre,
-                valor: valor,
-                stock: stock
-            }
+        await axios.post(`${URI}/${iduser}`, {
+            idempresa: idempresa,
+            nombre: nombre,
+            valor: valor,
+            stock: stock
         });
         navigate(`/${iduser}/products`);
     };
@@ -73,7 +70,7 @@ const AddProducts = ()=>{
                 <datalist id='empresas'>
                     {
                         empresas.map((empresa)=>(
-                            <option value={empresa.idempresa} label={empresa.nombreempresa} />
+                            <option key={empresa.idempresa} value={empresa.idempresa} label={empresa.nombreempresa} />
                         ))
                     }
                 </datalist>

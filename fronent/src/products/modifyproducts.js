@@ -30,14 +30,11 @@ const ModifyProducts = ()=>{
 
     const update = async (e) =>{
         e.preventDefault();
-        await axios.put(`${URI}/${id}`, {
-            iduser: iduser
-            ,options: {
-                nombre: nombre,
-                valor: valor,
-                stock: stock
-            }
-            });
+        await axios.put(`${URI}/${iduser}/${id}`, {
+            nombre: nombre,
+            valor: valor,
+            stock: stock
+        });
         navigate(`/${iduser}/products`);
     };
 
