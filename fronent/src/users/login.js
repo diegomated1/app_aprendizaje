@@ -18,13 +18,11 @@ const LogIn = ()=>{
             user: user,
             hash_u: hash_u
         });
-        if(res.data.error===0){
-            alert('Usuario no encontrado');
-        }else if(res.data.error===2){
-            alert('Contraseña incorrecta');
+        if([0,1].includes(res.data.res)){
+            alert('Credenciales no validas');
         }else{
-            localStorage.setItem('iduser', res.data.user.cedula);
-            navigate(`/${res.data.user.cedula}`);
+            localStorage.setItem('iduser', res.data.iduser);
+            navigate(`/${res.data.iduser}`);
         }
     };
 

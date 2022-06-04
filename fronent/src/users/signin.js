@@ -17,13 +17,23 @@ const SignIn = ()=>{
 
     const guardar = async (e) =>{
         e.preventDefault();
-        await axios.post(URI, {
+        var res = await axios.post(`${URI}/register`, {
             cedula: cedula,
             nombre: nombre,
             usuario: usuario,
             email: email,
             hash_u: hash_u
         });
+        if(res.data.res==0){
+            alert('Cedula ya registrada');
+            return
+        }else if(res.data.res==1){
+            alert('Usuario ya registrado');
+            return
+        }else if(res.data.res==2){
+            alert('Email ya registrado');
+            return
+        }
         localStorage.setItem('iduser', cedula);
         navigate(`/${cedula}`);
     };
