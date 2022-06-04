@@ -17,15 +17,12 @@ const AddClients = ()=>{
 
     const guardar = async (e) =>{
         e.preventDefault();
-        await axios.post(URI, {
-            iduser: iduser,
-            options: {
-                idcliente: idcliente,
-                nombre: nombre,
-                edad: edad,
-                direccion: direccion,
-                telefono: telefono
-        }
+        await axios.post(`${URI}/${iduser}`, {
+            idcliente: idcliente,
+            nombre: nombre,
+            edad: edad,
+            direccion: direccion,
+            telefono: telefono
         });
         navigate(`/${iduser}/clients`);
     };

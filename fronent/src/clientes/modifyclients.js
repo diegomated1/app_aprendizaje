@@ -32,14 +32,11 @@ const ModifyClients= ()=>{
 
     const update = async (e) =>{
         e.preventDefault();
-        await axios.put(`${URI}/${id}`, {
-            iduser: iduser,
-            options: {
-                nombre: nombre,
-                edad: edad,
-                direccion: direccion,
-                telefono: telefono
-            }
+        await axios.put(`${URI}/${iduser}/${id}`, {
+            nombre: nombre,
+            edad: edad,
+            direccion: direccion,
+            telefono: telefono
         });
         navigate(`/${iduser}/clients`);
     };
