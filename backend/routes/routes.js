@@ -10,7 +10,8 @@ import {getProduct, addProduct, editProduct, deleteProduct} from '../controllers
 import {getClient, addClient, editClient, deleteClient} from '../controllers/clientController.js';
 import {getSeller, addSeller, editSeller, deleteSeller} from '../controllers/sellerController.js';
 import {getBusiness, addBusiness, editBusiness, deleteBusiness} from '../controllers/businessController.js';
-import {getUser, addUser, editUser, deleteUser, login, register} from '../controllers/userController.js';
+import {login, register} from '../controllers/userController.js';
+import {getFactura, addFactura, editFactura, deleteFactura} from '../controllers/facturaController.js';
 //import {getUser, editUser, deleteUser, adduser, login} from '../controllers/userController.js';
 //import {getfactura, editfactura, deletefacturas, addfacturas} from '../controllers/facturaController.js';
 
@@ -40,6 +41,15 @@ businessrouter.delete('/:iduser/:id', deleteBusiness);
 
 userrouter.post('/login', login);
 userrouter.post('/register', register);
+
+facturarouter.get('/:iduser', getFactura); // MOSTRAR TODAS LAS FACTURAS
+facturarouter.get('/:iduser/:id', getFactura); // MOSTART UNA FACTURA
+facturarouter.get('/:iduser/:id/:idproducto', getFactura); // MOSTAR LOS PRODUCTOS DE LA FACTURA
+facturarouter.post('/:iduser', addFactura); // AGREGAR UNA FACTURA
+facturarouter.post('/:iduser/:id', addFactura); // AGREGAR UN PRODUCTO A UNA FACTURA
+facturarouter.put('/:iduser/:id', editFactura); // MODIFICAR UNA FACTURA
+facturarouter.delete('/:iduser/:id', deleteFactura); // ELIMINAR UNA FACTURA
+facturarouter.delete('/:iduser/:id/:idproducto', deleteFactura); // ELIMINAR UN PRODUCTO DE UNA FACTURA
 
 export const product_router = productrouter;
 export const client_router = clientrouter;
