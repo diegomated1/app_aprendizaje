@@ -1,57 +1,31 @@
-import {usuario} from '../models/models.js';
+import {Usuario} from '../models/models.js';
 import bc from 'bcrypt';
 import vali from 'validator';
-
-export const getUser = async (req, res)=>{
-    try{
-        if(req.params.id===undefined){
-            var usuarios = await usuario.select();
-        }else{
-            var usuarios = await usuario.select({where: {cedula: req.params.id}});
-        }
-        res.json(usuarios);
-    }catch(err){
-        res.json({error: err.message});
-    }
-};
-
-export const addUser = async (req, res)=>{
-    try{
-        var data = req.body;
-        await usuario.insert(data);
-        res.json({message: 'añadido'});
-    }catch(err){
-        res.json({error: err.message});
-    }
-};
-
-export const editUser = async (req, res)=>{
-    try{
-        await usuario.update(req.body, {cedula: req.params.iduser});
-        res.json({message: 'editado'});
-    }catch(err){
-        res.json({error: err.message});
-    }
-};
-
-export const deleteUser = async (req, res)=>{
-    try{
-        await usuario.delete({cedula: req.params.iduser});
-        res.json({message: 'eliminado'});
-    }catch(err){
-        res.json({error: err.message});
-    }
-};
 
 export const login = async (req, res)=>{
     try{
         var credencial = req.body.user;
         if(vali.isNumeric(credencial.toString())){
-            var user = await usuario.select({where: {cedula: credencial}});
+            var user = await Usuario.findAll({
+                where: {
+                    cedula: parseInt(credencial)
+                },
+                raw: true, nest: true
+            });
         }else if(vali.isEmail(credencial)){
-            var user = await usuario.select({where: {email: credencial}});
+            var user = await Usuario.findAll({
+                where: {
+                    email: credencial
+                },
+                raw: true, nest: true
+            });
         }else{
-            var user = await usuario.select({where: {usuario: credencial}});
+            var user = await Usuario.findAll({
+                where: {
+                    usuario: credencial
+                },
+                raw: true, nest: true
+            });
         }
         
         if(user.length==0){
@@ -75,26 +49,40 @@ export const register = async (req, res)=>{
         var {cedula, email} = req.body;
         var usuario_name = req.body.usuario;
 
-        var user1 = await usuario.select({where: {cedula: cedula}});
-        
+        var user1 = await Usuario.findAll({
+            where: {
+                cedula: cedula
+            },
+            raw: true, nest: true
+        });
         if(user1.length>0){
             res.json({res: 0});
             return
         }
 
-        var user2 = await usuario.select({where: {usuario: usuario_name}});
+        var user2 = await Usuario.findAll({
+            where: {
+                usuario: usuario_name
+            },
+            raw: true, nest: true
+        });
         if(user2.length>0){
             res.json({res: 1});
             return
         }
 
-        var user3 = await usuario.select({where: {email: email}});
+        var user3 = await Usuario.findAll({
+            where: {
+                email: email
+            },
+            raw: true, nest: true
+        });
         if(user3.length>0){
             res.json({res: 2});
             return
         }
         req.body.hash_u = await bc.hash(req.body.hash_u, 10);
-        await usuario.insert(req.body);
+        await Usuario.create(req.body);
         res.json({res: 3});
         
     }catch(err){
