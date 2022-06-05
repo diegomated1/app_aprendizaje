@@ -1,57 +1,129 @@
-import db from '../database/db.js';
+import { sequelize } from '../database/db.js';
+import { DataTypes } from 'sequelize';
 
-export const usuario = db.ADD.TABLE('usuario', {nombre: 'cedula', tipo: 'int'},{
-    nombre: 'varchar(30)',
-    usuario: 'varchar(30)',
-    email: 'varchar(50)',
-    hash_u: 'varchar(120)'
+export const Usuario = sequelize.define('usuario',{
+    cedula: {
+        type: DataTypes.INTEGER,
+        primaryKey: true
+    },
+    nombre: DataTypes.STRING,
+    usuario: DataTypes.STRING,
+    email: DataTypes.STRING,
+    hash_u: DataTypes.STRING
+}, {
+    freezeTableName: true,
+    timestamps: false
 });
 
-export const cliente = db.ADD.TABLE('cliente', {nombre: 'idcliente', tipo: 'int'},{
-    iduser: 'int',
-    nombre: 'varchar(60)',
-    edad: 'int',
-    direccion: 'varchar(100)',
-    telefono: 'int'
+export const Cliente = sequelize.define('cliente',{
+    iduser: DataTypes.INTEGER,
+    idcliente: {
+        type: DataTypes.INTEGER,
+        primaryKey: true
+    },
+    nombre: DataTypes.STRING,
+    edad: DataTypes.INTEGER,
+    direccion: DataTypes.STRING,
+    telefono: DataTypes.INTEGER,
+}, {
+    freezeTableName: true,
+    timestamps: false
 });
 
-export const vendedor = db.ADD.TABLE('vendedor', {nombre: 'idvendedor', tipo: 'int'},{
-    iduser: 'int',
-    nombre: 'varchar(30)',
-    edad: 'int',
-    direccion: 'varchar(100)',
-    telefono: 'int',
-    sueldo: 'int'
+export const Vendedor = sequelize.define('vendedor',{
+    iduser: DataTypes.INTEGER,
+    idvendedor: {
+        type: DataTypes.INTEGER,
+        primaryKey: true
+    },
+    nombre: DataTypes.STRING,
+    edad: DataTypes.INTEGER,
+    direccion: DataTypes.STRING,
+    telefono: DataTypes.INTEGER,
+    sueldo: DataTypes.INTEGER,
+}, {
+    freezeTableName: true,
+    timestamps: false
 });
 
-export const empresa = db.ADD.TABLE('empresa', {nombre: 'idempresa', tipo: 'int'},{
-    iduser: 'int',
-    nombreempresa: 'varchar(30)',
-    direccion: 'varchar(50)',
-    telefono: 'float'
+export const Empresa = sequelize.define('empresa',{
+    iduser: DataTypes.INTEGER,
+    idempresa: {
+        type: DataTypes.INTEGER,
+        primaryKey: true
+    },
+    nombreempresa: DataTypes.STRING,
+    direccion: DataTypes.STRING,
+    telefono: DataTypes.INTEGER
+}, {
+    freezeTableName: true,
+    timestamps: false
 });
 
-export const producto = db.ADD.TABLE('producto', {nombre: 'idproducto', tipo: 'int'},{
-    iduser: 'int',
-    nombre: 'varchar(30)',
-    valor: 'int',
-    stock: 'int',
-    idempresa: 'int'
+export const Factura = sequelize.define('factura',{
+    iduser: DataTypes.INTEGER,
+    idfactura: {
+        type: DataTypes.INTEGER,
+        primaryKey: true
+    },
+    fc: DataTypes.DATE,
+    fe: DataTypes.DATE,
+    idcliente: DataTypes.INTEGER,
+    idvendedor: DataTypes.INTEGER,
+    valorfactura: DataTypes.INTEGER,
+    descuentofactura: DataTypes.INTEGER
+}, {
+    freezeTableName: true,
+    timestamps: false
 });
 
-export const factura = db.ADD.TABLE('factura', {nombre: 'idfactura', tipo: 'int'},{
-    iduser: 'int',
-    fc: 'datetime',
-    fe: 'datetime',
-    idcliente: 'int',
-    idvendedor: 'int',
-    valorfactura: 'int',
-    descuentofactura: 'int'
+export const Producto = sequelize.define('producto',{
+    iduser: DataTypes.INTEGER,
+    idproducto: {
+        type: DataTypes.INTEGER,
+        primaryKey: true
+    },
+    nombre: DataTypes.STRING,
+    valor: DataTypes.INTEGER,
+    stock: DataTypes.INTEGER,
+    idempresa: DataTypes.INTEGER
+}, {
+    freezeTableName: true,
+    timestamps: false
 });
 
-export const productoxfactura = db.ADD.TABLE('productoxfactura', {nombre: 'idpf', tipo: 'int'},{
-    iduser: 'int',
-    idproducto: 'int',
-    idfactura: 'int',
-    cantproductos: 'int'
+export const Productoxfactura = sequelize.define('productoxfactura',{
+    iduser: DataTypes.INTEGER,
+    idpf: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    cantproductos: DataTypes.INTEGER
+}, {
+    freezeTableName: true,
+    timestamps: false
 });
+
+Usuario.hasMany(Cliente, {foreignKey: "iduser"});
+Usuario.hasMany(Vendedor, {foreignKey: "iduser"});
+Usuario.hasMany(Empresa, {foreignKey: "iduser"});
+Usuario.hasMany(Producto, {foreignKey: "iduser"});
+Usuario.hasMany(Factura, {foreignKey: "iduser"});
+Usuario.hasMany(Productoxfactura, {foreignKey: "iduser"});
+
+Empresa.hasMany(Producto, {foreignKey: "idproducto"});
+
+Cliente.hasMany(Factura, {foreignKey: "idcliente"});
+Vendedor.hasMany(Factura, {foreignKey: "idvendedor"});
+
+Factura.belongsToMany(Producto, {
+    through: Productoxfactura,
+    foreignKey: "idfactura"
+});
+
+Producto.belongsToMany(Factura, {
+    through: Productoxfactura,
+    foreignKey: "idproducto"
+});
+
