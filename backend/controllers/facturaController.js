@@ -1,16 +1,29 @@
-import { sequelize } from '../database/db.js';
-import {Factura, Producto, Productoxfactura} from '../models/models.js';
+import {Cliente, Factura, Producto, Productoxfactura, Vendedor} from '../models/models.js';
 
 export const getFactura = async (req, res)=>{
     try{
         if(req.params.id===undefined){
             var data = await Factura.findAll({
                 where: {iduser: req.params.iduser},
+                include: [{
+                    model: Cliente,
+                    attributes: ['nombre']
+                },{
+                    model: Vendedor,
+                    attributes: ['nombre']
+                }],
                 raw: true, nest: true
             });
         }else if(req.params.idproducto===undefined){
             var factura = await Factura.findAll({
                 where: {iduser: req.params.iduser, idfactura: req.params.id},
+                include: [{
+                    model: Cliente,
+                    attributes: ['nombre']
+                },{
+                    model: Vendedor,
+                    attributes: ['nombre']
+                }],
                 raw: true, nest: true
             });
             var productos = await Producto.findAll({
@@ -26,6 +39,13 @@ export const getFactura = async (req, res)=>{
         }else{
             var factura = await Factura.findAll({
                 where: {iduser: req.params.iduser, idfactura: req.params.id},
+                include: [{
+                    model: Cliente,
+                    attributes: ['nombre']
+                },{
+                    model: Vendedor,
+                    attributes: ['nombre']
+                }],
                 raw: true, nest: true
             });
             var producto = await Producto.findAll({
