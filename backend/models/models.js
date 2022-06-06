@@ -64,7 +64,8 @@ export const Factura = sequelize.define('factura',{
     iduser: DataTypes.INTEGER,
     idfactura: {
         type: DataTypes.INTEGER,
-        primaryKey: true
+        primaryKey: true,
+        autoIncrement: true
     },
     fc: DataTypes.DATE,
     fe: DataTypes.DATE,
@@ -114,8 +115,8 @@ Usuario.hasMany(Productoxfactura, {foreignKey: "iduser"});
 
 Empresa.hasMany(Producto, {foreignKey: "idproducto"});
 
-Cliente.hasMany(Factura, {foreignKey: "idcliente"});
-Vendedor.hasMany(Factura, {foreignKey: "idvendedor"});
+Factura.belongsTo(Cliente, {foreignKey: "idcliente"});
+Factura.belongsTo(Vendedor, {foreignKey: "idvendedor"});
 
 Factura.belongsToMany(Producto, {
     through: Productoxfactura,
