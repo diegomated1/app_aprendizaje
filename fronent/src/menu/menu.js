@@ -27,6 +27,9 @@ const Menu = ()=>{
                 <Link to={`/${iduser}/clients`} className="btn btn-info btn-lg">Clients</Link>
             </div>
             <div>
+                <Link to={`/${iduser}/facturas`} className="btn btn-info btn-lg">Facturas</Link>
+            </div>
+            <div>
                 <button onClick={cerrarsesion} className='btn btn-warning'>Cerrar Sesion</button>
             </div>
         </div>

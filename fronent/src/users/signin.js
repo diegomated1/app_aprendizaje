@@ -24,13 +24,13 @@ const SignIn = ()=>{
             email: email,
             hash_u: hash_u
         });
-        if(res.data.res==0){
+        if(res.data.res===0){
             alert('Cedula ya registrada');
             return
-        }else if(res.data.res==1){
+        }else if(res.data.res===1){
             alert('Usuario ya registrado');
             return
-        }else if(res.data.res==2){
+        }else if(res.data.res===2){
             alert('Email ya registrado');
             return
         }

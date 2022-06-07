@@ -20,8 +20,14 @@ import ShowSellers from './sellers/showsellers.js';
 import AddSellers from './sellers/addsellers.js';
 import ModifySellers from './sellers/modifysellers.js';
 
+import ShowFacturas from './facturas/showfacturas.js';
+import AddFactura from './facturas/addfacturas.js';
+import ModifyFactura from './facturas/modifyfacturas.js';
+
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
+import Test from './testing/test.js';
+
 
 function App() {
   var iduser = localStorage.getItem('iduser');
@@ -50,6 +56,13 @@ function App() {
           <Route exact path='/:iduser/sellers' element={<ShowSellers/>}/>
           <Route path='/:iduser/sellers/create' element={<AddSellers/>}/>
           <Route path='/:iduser/sellers/edit/:id' element={<ModifySellers/>}/>
+
+          <Route exact path='/:iduser/facturas' element={<ShowFacturas/>}/>
+          <Route path='/:iduser/facturas/create' element={<AddFactura/>}/>
+          <Route path='/:iduser/facturas/edit/:id' element={<ModifyFactura/>}/>
+
+          <Route exact path='/test' element={<Test/>}/>
+
         </Routes>
       </BrowserRouter>
     </div>
