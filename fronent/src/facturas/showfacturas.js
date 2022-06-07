@@ -3,24 +3,24 @@ import axios from 'axios';
 import {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 
-const URI = 'http://localhost:3000/client'; 
+const URI = 'http://localhost:3000/factura'; 
 
-const ShowClients = ()=>{
-    const [clients, setclients] = useState([]);
+const ShowFacturas = ()=>{
+    const [facturas, setfacturas] = useState([]);
     const iduser = localStorage.getItem('iduser');
 
     useEffect(()=>{
-        getclients();
+        getfacturas();
     }, []);
 
-    const getclients = async () => {
+    const getfacturas = async () => {
         const res = await axios.get(`${URI}/${iduser}`);
-        setclients(res.data);
+        setfacturas(res.data);
     }
 
-    const deletesellers = async (id) => {
+    const deletefacturas = async (id) => {
         await axios.delete(`${URI}/${iduser}/${id}`);
-        getclients();
+        getfacturas();
     }
 
     return(
@@ -30,25 +30,28 @@ const ShowClients = ()=>{
             <table className='table'>
                 <thead>
                     <tr>
-                        <th>Cedula</th>
-                        <th>Nombre</th>
-                        <th>Edad</th>
-                        <th>Direccion</th>
-                        <th>Telefono</th>
-                        <th>Acciones</th>
+                        <th>Id</th>
+                        <th>Fc</th>
+                        <th>Fe</th>
+                        <th>Id Cliente</th>
+                        <th>Id Vendedor</th>
+                        <th>Valor Factura</th>
+                        <th>Descuento Factura</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {clients.map((client)=>(
-                        <tr key={client.idcliente}>
-                            <td>{client.idcliente}</td>
-                            <td>{client.nombre}</td>
-                            <td>{client.edad}</td>
-                            <td>{client.direccion}</td>
-                            <td>{client.telefono}</td>
+                    {facturas.map((factura)=>(
+                        <tr key={factura.idfactura}>
+                            <td>{factura.idfactura}</td>
+                            <td>{factura.fc.split('T')[0]}</td>
+                            <td>{factura.fe.split('T')[0]}</td>
+                            <td>{factura.idcliente}</td>
+                            <td>{factura.idvendedor}</td>
+                            <td>{factura.valorfactura}</td>
+                            <td>{factura.descuentofactura}</td>
                             <td>
-                                <Link to={`edit/${client.idcliente}`} className="btn btn-info">Edit</Link>
-                                <button onClick={()=>deletesellers(client.idcliente)} className='btn btn-danger'>Delete</button>
+                                <Link to={`edit/${factura.idfactura}`} className="btn btn-info">Edit</Link>
+                                <button onClick={()=>deletefacturas(factura.idfactura)} className='btn btn-danger'>Delete</button>
                             </td>
                         </tr>
                     ))}
@@ -59,5 +62,5 @@ const ShowClients = ()=>{
     )
 }
 
-export default ShowClients;
+export default ShowFacturas;
 

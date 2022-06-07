@@ -1,80 +1,132 @@
 
 import axios from 'axios';
-import {useState, useEffect} from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useState, useEffect} from 'react';
+import { useNavigate, Link, useParams } from 'react-router-dom';
+import TableFactura from './tableFactura.js';
+import date from 'date-and-time';
 
-const URI = 'http://localhost:3000/client'; 
+const URI = 'http://localhost:3000/factura'; 
+const URI_F = 'http://localhost:3000/factura'; 
 
-
-const ModifyClients= ()=>{
-    const {id} = useParams();
+const ModifyFactura = ()=>{
     const iduser = localStorage.getItem('iduser');
-    const navigate = useNavigate();
+    const {id} = useParams();
 
-    const [idcliente, setidcliente] = useState('');
-    const [nombre, setnombre] = useState('');
-    const [edad, setedad] = useState('');
-    const [direccion, setdireccion] = useState('');
-    const [telefono, settelefono] = useState('');
+    const navigate = useNavigate();
+    
+    // ESTADOS QUE ALMACENAN VENDEDORES, CLIENTES, PRODUCTOS DE LA BASE DE DATOS
+    const [factura, setfactura] = useState();
+    const [productos, setproductos] = useState([]);
+    const [productos_db, setproductosdb] = useState([]);
+
+    // ESTADOS QUE SE USARAN PARA LOS ATRIBUTOS DE LA FACTURA, PARA GUARDARLA EN LA BASE DE DATOS
+    
+    const [fe, setfe] = useState('');
+    const [valorfactura, setvalorfactura] = useState(0);
+    const [descuentofactura, setdescuentofactura] = useState('');
 
     useEffect(()=>{
-        getclients();
+        getfactura();
     }, []);
 
-    const getclients = async ()=>{
-        var res = (await axios.get(`${URI}/${iduser}/${id}`)).data[0];
-        setidcliente(res.idcliente);
-        setnombre(res.nombre);
-        setedad(res.edad);
-        setdireccion(res.direccion);
-        settelefono(res.telefono);
+    const getfactura = ()=>{
+        axios.get(`${URI_F}/${iduser}/${id}`).then(res=>{
+            setfactura(res.data.factura[0]);
+            document.getElementById('descuentofactura').value = res.data.factura[0].descuentofactura;
+            document.getElementById('date_fe').value = res.data.factura[0].fe.split('T')[0];
+
+            var productos_data = res.data.productos;
+            
+            productos_data.forEach((producto, index)=>{
+                productos_data[index].cantproductos = producto.facturas.productoxfactura.cantproductos;
+            })
+            
+            var total = 0;
+            productos_data.forEach(producto=>{
+                total += (producto.valor * producto.cantproductos);
+            });
+            setdescuentofactura(res.data.factura[0].descuentofactura);
+            setvalorfactura(total);
+            setfe(res.data.factura[0].fe);
+            setproductos(productos_data);
+            setproductosdb([...productos_data]);
+        });
     }
 
-    const update = async (e) =>{
+    // GUARDA EN LA BASE DE DATOS LA FACTURA
+    const guardar = async (e) =>{
         e.preventDefault();
-        await axios.put(`${URI}/${id}`, {
-            iduser: iduser,
-            options: {
-                nombre: nombre,
-                edad: edad,
-                direccion: direccion,
-                telefono: telefono
-            }
-        });
-        navigate(`/${iduser}/clients`);
+        const factura_body = {
+            fe: fe,
+            valorfactura: valorfactura,
+            descuentofactura: parseInt(descuentofactura)
+        }
+        
+        await axios.put(`${URI_F}/${iduser}/${factura.idfactura}`, factura_body);
+        
+        for(let i=0;i<productos_db.length;i++){
+            await axios.delete(`${URI_F}/${iduser}/${factura.idfactura}/${productos_db[i].idproducto}`);
+        }
+
+        await axios.post(`${URI_F}/${iduser}/${factura.idfactura}`, {productos: productos});
+        navigate(`/${iduser}/facturas`);
     };
 
     return(
-        <div>
-            <Link to={`/${iduser}/clients`} className='btn btn-secondary'>Back</Link>
-            <h3>Modificar Cliente #{idcliente}</h3>
-            <form onSubmit={update}>
+        <div className='container card'>
+            <Link to={`/${iduser}/facturas`} className='btn btn-secondary'>Back</Link>
+            <h3>Agregar Factura</h3>
+            <form onSubmit={guardar}>
+
+                <label>Valor Neto</label>
+                <div className='card'>
+                    <label>0</label>
+                </div><br/>
+
+                <label>Valor Total</label>
+                <div className='card'>
+                    <label>{valorfactura}</label>
+                </div><br/>
+
+                <hr></hr>
+
                 <input
-                    placeholder='Nombre'
-                    value={nombre}
-                    onChange={(e)=> setnombre(e.target.value)}
+                    id='date_fe'
+                    type='date'
+                    placeholder='Fecha Entrega'
+                    onChange={(e)=> setfe(e.target.value)}
                 /><br/>
+
                 <input
-                    placeholder='Edad'
-                    value={edad}
-                    onChange={(e)=> setedad(e.target.value)}
+                    value={2}
+                    disabled
                 /><br/>
+
                 <input
-                    placeholder='Direccion'
-                    value={direccion}
-                    onChange={(e)=> setdireccion(e.target.value)}
+                    value={2}
+                    disabled
                 /><br/>
+
                 <input
+                    id='descuentofactura'
                     type='number'
-                    placeholder='Telefono'
-                    value={telefono}
-                    onChange={(e)=> settelefono(e.target.value)}
+                    placeholder='descuentofactura'
+                    onChange={(e)=> setdescuentofactura(e.target.value)}
                 /><br/>
+
+                <hr></hr>
+                
+                <TableFactura
+                    setvalorfactura={setvalorfactura}
+                    productos={productos}
+                    setproductos={setproductos}
+                />
+
                 <button type="submit" className='btn btn-primary'>Modificar</button>
             </form>
         </div>
     )
 }
 
-export default ModifyClients;
+export default ModifyFactura;
 
