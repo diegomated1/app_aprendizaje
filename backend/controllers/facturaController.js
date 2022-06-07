@@ -71,14 +71,14 @@ export const addFactura = async (req, res)=>{
         if(req.params.id===undefined){
             var factura = req.body.factura;
             factura.iduser = req.params.iduser;
-            await Factura.create(factura);
+            var factura_create = await Factura.create(factura);
 
             req.body.productos.forEach(async (product) => {
                 await Productoxfactura.create({
                     iduser: req.params.iduser,
                     cantproductos: product.cantproductos,
                     idproducto: product.idproducto,
-                    idfactura: factura.idfactura
+                    idfactura: factura_create.idfactura
                 });
             });
         }else{
